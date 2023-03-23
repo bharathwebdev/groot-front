@@ -2,8 +2,10 @@ import logo from "./logo.svg";
 import "./App.css";
 import supabase from "./supabase";
 import { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 function App() {
   const [state, setstate] = useState(false);
+  const [mysite,setmysite] = useState("https://preeminent-bienenstitch-1f1cca.netlify.app/");
   supabase
     .channel("any")
     .on(
@@ -20,7 +22,8 @@ function App() {
     <div className="App">
       {!state ? (
         <div className="qr-main">
-          <img className="qr" src="qrcode.png" />
+          <QRCode value={mysite}/>
+          {/* <img className="qr" src="qrcode.png" /> */}
         </div>
       ) : (
         <div>
