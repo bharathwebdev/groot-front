@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
-
+import logo from "./logo.svg";
+import "./App.css";
+import supabase from "./supabase";
+import { useEffect, useState } from "react";
 function App() {
+  const [state, setstate] = useState(false);
+  supabase
+    .channel("any")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "verify" },
+      (payload) => {
+        console.log("Change received!", payload);
+        setstate(payload?.new?.value);
+      }
+    )
+    .subscribe();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {!state ? (
+        <div className="qr-main">
+          <img className="qr" src="qrcode.png" />
+        </div>
+      ) : (
+        <div>
+          <h1>SUCCESS ✅</h1> 
+          </div>
+        
+      )}
     </div>
   );
 }
